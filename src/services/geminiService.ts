@@ -1,6 +1,31 @@
-import { GoogleGenAI, Type, GenerateContentResponse } from "@google/genai";
+import { GoogleGenAI, Type, GenerateContentResponse, Modality } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || process.env.API_KEY || "" });
+
+export async function generateClickSound() {
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash-preview-tts",
+      contents: [{ parts: [{ text: 'Aahn..' }] }],
+      config: {
+        responseModalities: [Modality.AUDIO],
+        speechConfig: {
+          voiceConfig: {
+            prebuiltVoiceConfig: { voiceName: 'Kore' }, // 'Kore' is a female voice
+          },
+        },
+      },
+    });
+
+    const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    if (base64Audio) {
+      return `data:audio/mp3;base64,${base64Audio}`;
+    }
+  } catch (err) {
+    console.error("Failed to generate click sound", err);
+  }
+  return null;
+}
 
 export async function generatePostContent(prompt: string, referenceImage?: string | null, tone: string = 'Professional', platform: string = 'linkedin') {
   let platformInstructions = "";

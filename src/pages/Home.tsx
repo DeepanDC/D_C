@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Linkedin, Instagram, Facebook, MessageCircle, Twitter, Sparkles, Moon, Sun, Mail, Phone, Send, Volume2, VolumeX } from 'lucide-react';
+import { generateClickSound } from '../services/geminiService';
 
 const platforms = [
   {
@@ -55,12 +56,27 @@ export default function Home() {
   const [newCommentName, setNewCommentName] = useState('');
   const [newCommentContent, setNewCommentContent] = useState('');
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [clickSoundUrl, setClickSoundUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Generate the custom click sound on mount
+    const initSound = async () => {
+      const url = await generateClickSound();
+      if (url) {
+        setClickSoundUrl(url);
+      } else {
+        // Fallback sound
+        setClickSoundUrl('https://assets.mixkit.co/active_storage/sfx/2997/2997-preview.mp3');
+      }
+    };
+    initSound();
+  }, []);
 
   // Sound effect
   const playClickSound = () => {
-    if (!isMuted) {
-      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2997/2997-preview.mp3');
-      audio.volume = 0.2;
+    if (!isMuted && clickSoundUrl) {
+      const audio = new Audio(clickSoundUrl);
+      audio.volume = 0.5;
       audio.play().catch(() => {});
     }
   };
@@ -135,9 +151,11 @@ export default function Home() {
             setIsMuted(!isMuted);
             if (isMuted) {
               // Play sound when unmuting
-              const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2997/2997-preview.mp3');
-              audio.volume = 0.2;
-              audio.play().catch(() => {});
+              if (clickSoundUrl) {
+                const audio = new Audio(clickSoundUrl);
+                audio.volume = 0.5;
+                audio.play().catch(() => {});
+              }
             }
           }}
           className="glass-panel p-3 rounded-full hover:bg-white/10 transition-colors flex items-center justify-center"
@@ -151,24 +169,26 @@ export default function Home() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center max-w-2xl mx-4 flex flex-col items-center w-full"
+          className="text-center max-w-2xl mx-4 flex flex-col items-center justify-center w-full mt-8"
         >
-          <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel mb-4 text-xs font-medium ${isLightMode || isDynamicMode ? 'text-purple-600' : 'text-purple-300'}`}>
-            <Sparkles className="w-3.5 h-3.5" />
+          <div className={`mb-2 text-lg font-medium tracking-wide ${isLightMode || isDynamicMode ? 'text-purple-600' : 'text-purple-300'}`}>
             AI-Powered Social Media Handler
           </div>
-          <div className="relative inline-flex flex-col items-center mb-4">
+          
+          <div className="relative flex flex-col items-center mb-6">
             <h1 className={`text-4xl md:text-5xl font-bold tracking-tight bg-clip-text text-transparent flex items-center justify-center gap-2 ${isLightMode || isDynamicMode ? 'bg-gradient-to-r from-slate-800 via-slate-600 to-slate-400' : 'bg-gradient-to-r from-white via-white to-white/60'}`}>
-              Easy with DC
+              Easy with <span className="relative">DC
+                <svg className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-3 text-white" viewBox="0 0 100 20" preserveAspectRatio="none">
+                  <path d="M10,5 Q50,20 90,5" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" />
+                </svg>
+              </span>
             </h1>
-            <svg className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-3 text-white" viewBox="0 0 100 20" preserveAspectRatio="none">
-              <path d="M10,5 Q50,20 90,5" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" />
-            </svg>
           </div>
+          
           <p className={`text-lg font-light leading-relaxed ${subTextColor}`}>
             "People may die but Ideas never" 
             <br />
-            <span className={`text-xs italic mt-1 block ${metaTextColor}`}>- 𓄂𝘿èé𝙥𝙖𝙣♔</span>
+            <span className={`text-xs italic mt-2 block ${metaTextColor}`}>- 𓄂𝘿èé𝙥𝙖𝙣♔</span>
           </p>
         </motion.div>
 
