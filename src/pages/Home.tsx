@@ -176,9 +176,15 @@ export default function Home() {
           </div>
           
           <div className="relative flex flex-col items-center mb-6">
-            <h1 className={`text-4xl md:text-5xl font-bold tracking-tight bg-clip-text text-transparent flex items-center justify-center gap-2 ${isLightMode || isDynamicMode ? 'bg-gradient-to-r from-slate-800 via-slate-600 to-slate-400' : 'bg-gradient-to-r from-white via-white to-white/60'}`}>
-              Easy with <span className="relative">DC
-                <svg className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-3 text-white" viewBox="0 0 100 20" preserveAspectRatio="none">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight flex items-center justify-center gap-2">
+              <span className={`bg-clip-text text-transparent ${isLightMode || isDynamicMode ? 'bg-gradient-to-r from-slate-800 via-slate-600 to-slate-400' : 'bg-gradient-to-r from-white via-white to-white/60'}`}>
+                Easy with
+              </span>
+              <span className="relative">
+                <span className={`bg-clip-text text-transparent ${isLightMode || isDynamicMode ? 'bg-gradient-to-r from-slate-800 via-slate-600 to-slate-400' : 'bg-gradient-to-r from-white via-white to-white/60'}`}>
+                  DC
+                </span>
+                <svg className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-3 text-white" viewBox="0 0 100 20" preserveAspectRatio="none">
                   <path d="M10,5 Q50,20 90,5" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" />
                 </svg>
               </span>
@@ -250,7 +256,7 @@ export default function Home() {
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl w-full z-10 mt-16 mb-24 relative"
       >
         {platforms.map((platform, index) => (
-          <Link key={platform.id} to={`/${platform.id}`} onClick={playClickSound}>
+          <Link key={platform.id} to={`/login/${platform.id}`} onClick={playClickSound}>
             <motion.div 
               whileHover={{ y: -5, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

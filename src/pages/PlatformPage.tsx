@@ -135,25 +135,7 @@ export default function PlatformPage() {
   };
 
   const handleConnect = async () => {
-    setError(null);
-    try {
-      if (platform === 'linkedin') {
-        const res = await fetch('/api/auth/url');
-        if (!res.ok) throw new Error('Failed to fetch auth URL');
-        const { url } = await res.json();
-        window.open(url, 'linkedin_oauth', 'width=600,height=700');
-      } else {
-        // Simulate login for other platforms
-        const res = await fetch('/api/auth/simulate', { method: 'POST' });
-        if (res.ok) {
-          fetchUser();
-        } else {
-          throw new Error('Failed to simulate connection');
-        }
-      }
-    } catch (err: any) {
-      setError(`Connection failed: ${err.message}`);
-    }
+    navigate(`/login/${platform}`);
   };
 
   const handleGenerate = async () => {
